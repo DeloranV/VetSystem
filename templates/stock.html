@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block body %}
+<h1>Zasoby</h1>
+<p>Poniżej przedstawiony został spis zasobów naszej kliniki.
+  Możesz dokonać zamówienia partii zasobów klikając w guzik poniżej.</p>
+<input type="button" id="add_app" value="Zamów partię u dostawcy">
+<table>
+  <tr>
+    {% for header in headers %}
+    <th>{{ header }}</th>
+    {% endfor %}
+  </tr>
+  {% for row in table %}
+    <tr>
+      <td class="res_id">{{ row[0] }}</td>
+      {% for item in row[1:] %}
+      <td>{{ item }}</td>
+      {% endfor %}
+    </tr>
+  {% endfor %}
+</table>
+{% endblock %}

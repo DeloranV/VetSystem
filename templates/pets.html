@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block body %}
+<h1>Zwierzęta</h1>
+<p>Poniżej przedstawiona została lista zwierząt zarejestrowanych w naszej klinice.
+  Możesz edytować dane zwierzęcia klikając w ID,
+  wybierając opcję do zmiany a następnie wpisując pożądaną wartość. </p>
+<p>Możesz również zarejestrować nowe zwierzę, korzystając z poniższego guzika</p>
+<input type="button" id="add_pet" value="Zarejestruj nowe zwierzę">
+<table>
+  <tr>
+    {% for header in headers %}
+    <th>{{ header }}</th>
+    {% endfor %}
+  </tr>
+  {% for row in table %}
+    <tr>
+      <td class="pet_id">{{ row[0] }}</td>
+      {% for item in row[1:] %}
+      <td>{{ item }}</td>
+      {% endfor %}
+    </tr>
+  {% endfor %}
+</table>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+  $('.pet_id').on('click', function(event){ //ZMIENIC NA KLIKANIE NA ID I POTEM WYBRAC CO SIE CHCE ZMIENIC I PRZESYLANIE ID W AJAX
+    if($('select').length == 0){
+
+      var $clicked_id = $(this).text();
+
+      var $option_select = $("<select>");
+      var $name_option = $("<option value='name'>Imie</option>");
+      var $type_option = $("<option value='type'>Gatunek</option>");
+      var $age_option = $("<option value='age'>Wiek</option>");
+
+      var $change_line = $('<input>')
+      .attr('type', 'text')
+      .attr('id', 'change_line');
+
+      var $change_submit = $("<input>")
+      .attr('type', 'button')
+      .attr('id', 'change_submit')
+      .attr('value', 'Zmień');
+
+      $('body').append($option_select);
+      $('select').append($name_option);
+      $('select').append($type_option);
+      $('select').append($age_option)
+
+      $('body').append($change_line);
+
+      $('body').append($change_submit);
+
+      $('#change_submit').on('click', function(){
+        var $changed_attr = $('select').val();
+        var $changed_val = $('#change_line').val();
+
+        var data_object = {}
+        data_object[$changed_attr] = $changed_val
+
+        $.ajax({
+          url: '/api/pets/'.concat($clicked_id, '?key=1234'),
+          method: 'PATCH',
+          data: JSON.stringify(data_object),
+          contentType: 'application/json'
+        }).done(function(data){
+          $.ajax({
+          url: '/pets',
+          method: 'GET'
+          }).done(function(data){
+            $('body').html(data);
+          });
+        });
+
+        $('#change_submit').remove();
+        $('select').remove();
+        $('#change_line').remove();
+      });
+
+    };
+ });
+
+</script>
+{% endblock %}
+

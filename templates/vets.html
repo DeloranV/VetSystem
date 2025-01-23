@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block body %}
+<h1>Weterynarze</h1>
+<p>Poniżej przedstawiona została lista weterynarzy dyżurujących w naszej klinice.
+  Możesz edytować ich dane klikając w ID,
+  wybierając opcję do zmiany a następnie wpisując pożądaną wartość. </p>
+<p>Możesz również zarejestrować nowego weterynarza, korzystając z poniższego guzika</p>
+<input type="button" id="add_vet" value="Zarejestruj nowego weterynarza">
+<table>
+  <tr>
+    {% for header in headers %}
+    <th>{{ header }}</th>
+    {% endfor %}
+  </tr>
+  {% for row in table %}
+    <tr>
+      <td class="vet_id">{{ row[0] }}</td>
+      {% for item in row[1:] %}
+      <td>{{ item }}</td>
+      {% endfor %}
+    </tr>
+  {% endfor %}
+</table>
+{% endblock %}

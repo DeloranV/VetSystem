@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block body %}
+
+<h2>Logowanie</h2>
+
+<form method="POST" action="/authenticate">
+  <label>E-mail</label>
+  <input name="email" id="email">
+  <label>Hasło</label>
+  <input name="password" id="password">
+  <input type="submit" value="Zaloguj">
+</form>
+
+{% endblock %}

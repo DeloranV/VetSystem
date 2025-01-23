@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block body %}
+<h1>Wizyty</h1>
+<p>Poniżej przedstawiona została lista zaplanowanych wizyt. Możesz zmienić jej termin klikając w ID
+a następnie wpisując pożądany termin w formacie RRRR-MM-DD GG-MM-SS.</p>
+<p>Możesz również zarejestrować nową wizytę, korzystając z poniższego guzika</p>
+<input type="button" id="add_app" value="Zarejestruj nową wizytę">
+<table>
+  <tr>
+    {% for header in headers %}
+    <th>{{ header }}</th>
+    {% endfor %}
+  </tr>
+  {% for row in table %}
+    <tr>
+      <td class="app_id">{{ row[0] }}</td>
+      {% for item in row[1:] %}
+        <td>{{ item }}</td>
+      {% endfor %}
+    </tr>
+  {% endfor %}
+</table>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+  $('.app_id').on('click', function(event){ //ZMIENIC NA KLIKANIE NA ID I POTEM WYBRAC CO SIE CHCE ZMIENIC I PRZESYLANIE ID W AJAX
+    if($('select').length == 0){
+
+      var $clicked_id = $(this).text();
+
+      var $option_select = $("<select>");
+      var $scheduled_option = $("<option value='scheduled'>Termin wizyty</option>");
+
+      var $change_line = $('<input>')
+      .attr('type', 'text')
+      .attr('id', 'change_line');
+
+      var $change_submit = $("<input>")
+      .attr('type', 'button')
+      .attr('id', 'change_submit')
+      .attr('value', 'Zmień');
+
+      $('body').append($option_select);
+      $('select').append($scheduled_option);
+
+      $('body').append($change_line);
+
+      $('body').append($change_submit);
+
+      $('#change_submit').on('click', function(){
+        var $changed_attr = $('select').val();
+        var $changed_val = $('#change_line').val();
+
+        var data_object = {}
+        data_object[$changed_attr] = $changed_val
+
+        $.ajax({
+          url: '/api/appointments/'.concat($clicked_id, '?key=1234'),
+          method: 'PATCH',
+          data: JSON.stringify(data_object),
+          contentType: 'application/json'
+        }).done(function(data){
+          $.ajax({
+          url: '/appointments',
+          method: 'GET'
+          }).done(function(data){
+            $('body').html(data);
+          });
+        });
+
+        $('#change_submit').remove();
+        $('select').remove();
+        $('#change_line').remove();
+      });
+
+    };
+ });
+
+</script>
+{% endblock %}

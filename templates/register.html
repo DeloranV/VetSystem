@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block body %}
+
+<form method="POST" action="/createaccount">
+
+  <label>E-mail</label>
+  <input name="email" id="email">
+
+  <label>Hasło</label>
+  <input name="password" id="password">
+
+  <label>Imie</label>
+  <input name="name" id="name">
+
+  <label>Nazwisko</label>
+  <input name="surname" id="surname">
+
+  <label>Numer telefonu</label>
+  <input name="phone" id="phone">
+
+  <input type="submit" value="Zarejestruj">
+  <label></label>
+</form>
+
+{% endblock %}
