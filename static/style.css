@@ -81,6 +81,11 @@ input[type="button"]:hover {
     background-color: #45a049;
 }
 
+#add_pet_box{
+    display: flex;
+    flex-direction
+}
+
 table {
     width: 100%;
     border-collapse: collapse;

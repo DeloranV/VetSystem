@@ -5,6 +5,62 @@
 a następnie wpisując pożądany termin w formacie RRRR-MM-DD GG-MM-SS.</p>
 <p>Możesz również zarejestrować nową wizytę, korzystając z poniższego guzika</p>
 <input type="button" id="add_app" value="Zarejestruj nową wizytę">
+<div id="register_container">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script>
+    $('#add_app').on('click', function(){
+        if($('#type_input').length == 0) {
+
+          var $type_label = $('<label>Rodzaj wizyty</label>');
+          var $type_input = $('<input>')
+          .attr('id', 'type_input')
+          .attr('type', 'text');
+
+          var $pet_label = $('<label>Zwierzę do zarejestrowania</label>');
+          var $pet_input = $('<input>')
+          .attr('id', 'pet_input')
+          .attr('type', 'text');
+
+          var $scheduled_label = $('<label>Termin wizyty</label>');
+          var $scheduled_input = $('<input>')
+          .attr('id', 'scheduled_input')
+          .attr('type', 'text');
+
+          var $submit_button = $('<input>')
+          .attr('type', 'button')
+          .attr('id', 'submit_button')
+          .attr('value', 'Zarejestruj');
+
+          $('#register_container').append($type_label, $type_input, $pet_label, $pet_input, $scheduled_label,
+                          $scheduled_input, $submit_button);
+
+          $('#submit_button').on('click', function(){
+
+            var $type_val = $('#type_input').val()
+            var $pet_val = $('#pet_input').val();
+            var $scheduled_val = $('#scheduled_input').val();
+
+            $.ajax({
+              url: '/api/appointments'.concat('?key=1234'),
+              method: 'POST',
+              contentType: 'application/json',
+              data: JSON.stringify({"pet_id": $pet_val,
+                                    "appointment_type": $type_val,
+                                    "scheduled": $scheduled_val})
+            }).done(function(data){
+              $.ajax({
+                url: '/appointments',
+                method: 'GET',
+
+              }).done(function(data){
+                $('body').html(data);
+              });
+            });
+          });
+        };
+    });
+  </script>
+</div>
 <table>
   <tr>
     {% for header in headers %}

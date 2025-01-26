@@ -6,6 +6,7 @@ from werkzeug.utils import redirect
 from check_api import check_api_key
 from check_login import check_logged_in, check_logged_out
 from dbContextManager import UseDatabase
+from random import randrange
 
 app = Flask(__name__)
 app.secret_key = 'secret'
@@ -193,6 +194,29 @@ def vet_monitor():
     else:
         return redirect('/')
 
+@app.route('/users')
+@check_logged_in
+def users():
+    if session['role'] == 'a':
+        try:
+            with UseDatabase(app.config['dbconfig']) as cursor:
+                _SQL = "SELECT id, name, surname, api_key, email, phone FROM users"
+
+                cursor.execute(_SQL)
+
+                results = cursor.fetchall()
+
+            headers = ("ID użytkownika", "Imię", "Nazwisko", "Klucz API",
+                       "Email", "Telefon")
+            return render_template('users.html',
+                                   headers=headers,
+                                   table=results)
+
+        except DatabaseError:
+            return "Unable to connect to the database", 404
+    else:
+        return redirect('/')
+
 @app.route('/api/appointments')
 @app.route('/api/appointments/<int:app_id>')
 @check_api_key(app)
@@ -277,20 +301,78 @@ def vets_api(vet_id=None):
     except DatabaseError:
         return "Unable to connect to the database", 404
 
+@app.route('/api/appointments', methods=['POST'])
+@check_api_key(app)
+def add_app_api():
+    try:
+        app_data = request.get_json()
+        # change to unique api key identification
+        with UseDatabase(app.config['dbconfig']) as cursor:
+            _SQL = '''SELECT id FROM vets
+                    WHERE appointment_type=%s AND id NOT IN(
+                        SELECT vet_id FROM appointments
+                        WHERE scheduled IN(%s))'''
+
+            cursor.execute(_SQL, (app_data['appointment_type'],
+                                  app_data['scheduled']))
+
+            results = cursor.fetchall()
+            available_vets = []
+
+            for result in results:
+                available_vets.append(result[0])
+
+            if len(available_vets) == 0:
+                return "Not available at this date"
+
+            random_vet_id = available_vets[randrange(0, len(available_vets))]
+
+            if app_data['appointment_type'] == 'w':
+                resource_used = 3
+            elif app_data['appointment_type'] == 'k':
+                resource_used = 1
+            elif app_data['appointment_type'] == 'z':
+                resource_used = 4
+
+            _SQL = '''INSERT INTO appointments(pet_id, vet_id, resource_id, appointment_type, scheduled) 
+                    VALUES(%s, %s, %s, %s, %s)'''
+
+            cursor.execute(_SQL, (app_data['pet_id'],
+                                  random_vet_id,
+                                  resource_used,
+                                  app_data['appointment_type'],
+                                  app_data['scheduled']))
+
+            _SQL = '''UPDATE resources SET amount = amount - 1 WHERE id=%s'''
+
+            cursor.execute(_SQL, (resource_used,))
+
+        return "Successfully added new appointment", 201
+
+    except DatabaseError:
+        return "Unable to connect to the database", 404
+
 @app.route('/api/pets', methods=['POST'])
 @check_api_key(app)
 def add_pet_api():
     try:
         pet_data = request.get_json()
-
           #change to unique api key identification
         with UseDatabase(app.config['dbconfig']) as cursor:
-            _SQL = '''INSERT INTO pets(owner_id, name, type, age) VALUES(%s, %s, %s, %s)'''
+            if 'owner_id' in pet_data:
+                _SQL = '''INSERT INTO pets(owner_id, name, type, age) VALUES(%s, %s, %s, %s)'''
 
-            cursor.execute(_SQL, (pet_data['owner_id'],
-                                  pet_data['name'],
-                                  pet_data['type'],
-                                  pet_data['age']))
+                cursor.execute(_SQL, (pet_data['owner_id'],
+                                      pet_data['name'],
+                                      pet_data['type'],
+                                      pet_data['age']))
+            else:
+                _SQL = '''INSERT INTO pets(owner_id, name, type, age) VALUES(%s, %s, %s, %s)'''
+
+                cursor.execute(_SQL, (session['userid'],
+                                      pet_data['name'],
+                                      pet_data['type'],
+                                      pet_data['age']))
 
         return "Successfully added new pet", 201
 
@@ -392,6 +474,63 @@ def modify_vet_api(vet_id):
                 cursor.execute(_SQL, (value, vet_id))
 
         return "Successfully updated vet data"
+
+    except DatabaseError:
+        return "Unable to connect to the database", 404
+
+@app.route('/api/resupply/<int:res_id>', methods=['PATCH'])
+@check_api_key(app)
+def modify_stock_api(res_id):
+    try:
+        res_data = request.get_json()
+        with UseDatabase(app.config['dbconfig']) as cursor:
+            _SQL = '''UPDATE resources SET amount=amount+%s WHERE id=%s'''
+
+            cursor.execute(_SQL, (res_data['amount'], res_id))
+
+            return "Resupplied resource successfully"
+
+    except DatabaseError:
+        return "Unable to connect to the database", 404
+
+@app.route('/api/pets/<int:pet_id>', methods=['DELETE']) #(TODO)
+@check_api_key(app)
+def delete_pet_api(pet_id):
+    try:
+        with UseDatabase(app.config['dbconfig']) as cursor:
+            _SQL = '''DELETE FROM pets WHERE id=%s'''
+
+            cursor.execute(_SQL, (pet_id,))
+
+        return "Successfully removed pet data"
+
+    except DatabaseError:
+        return "Unable to connect to the database", 404
+
+@app.route('/api/vets/<int:vet_id>', methods=['DELETE']) #(TODO)
+@check_api_key(app)
+def delete_vet_api(vet_id):
+    try:
+        with UseDatabase(app.config['dbconfig']) as cursor:
+            _SQL = '''DELETE FROM vets WHERE id=%s'''
+
+            cursor.execute(_SQL, (vet_id,))
+
+        return "Successfully removed vet data"
+
+    except DatabaseError:
+        return "Unable to connect to the database", 404
+
+@app.route('/api/users/<int:user_id>', methods=['DELETE']) #(TODO)
+@check_api_key(app)
+def delete_user_api(user_id):
+    try:
+        with UseDatabase(app.config['dbconfig']) as cursor:
+            _SQL = '''DELETE FROM users WHERE id=%s'''
+
+            cursor.execute(_SQL, (user_id,))
+
+        return "Successfully removed user data"
 
     except DatabaseError:
         return "Unable to connect to the database", 404

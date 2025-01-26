@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block body %}
+<h1>Użytkownicy</h1>
+<p>Poniżej przedstawiona została lista użytkowników systemu. Możesz zmienić ich dane klikając na ID,
+  wybierając opcję do zmiany a następnie wpisując pożądaną wartość. </p>
+<p>Możesz również zarejestrować nowego weterynarza, korzystając z poniższego guzika</p>
+<table>
+  <tr>
+    {% for header in headers %}
+    <th>{{ header }}</th>
+    {% endfor %}
+  </tr>
+  {% for row in table %}
+    <tr>
+      <td class="user_id">{{ row[0] }}</td>
+      {% for item in row[1:] %}
+      <td>{{ item }}</td>
+      {% endfor %}
+    </tr>
+  {% endfor %}
+</table>
+<select id="remove_id">
+  {% for row in table %}
+  <option value="{{ row[0] }}">{{ row[0] }}</option>
+  {% endfor %}
+</select>
+  <input type="button" id="remove_user" value="Usuń użytkownika">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script>
+    $('#remove_user').on('click', function(){
+      var $user_id = $('#remove_id').val();
+
+      $.ajax({
+        url: '/api/users/'.concat($user_id, '?key=1234'),
+        method: 'DELETE'
+      }).done(function(data){
+        $.ajax({
+          url: '/users',
+          method: 'GET'
+        }).done(function(data){
+          $('body').html(data);
+        });
+      });
+    });
+  </script>
+{% endblock %}

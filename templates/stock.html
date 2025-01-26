@@ -3,7 +3,71 @@
 <h1>Zasoby</h1>
 <p>Poniżej przedstawiony został spis zasobów naszej kliniki.
   Możesz dokonać zamówienia partii zasobów klikając w guzik poniżej.</p>
-<input type="button" id="add_app" value="Zamów partię u dostawcy">
+<input type="button" id="restock" value="Zamów partię u dostawcy">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+<script>
+  $('#restock').on('click', function(){
+    var rand_amount = Math.floor(Math.random()*10)
+
+    $.ajax({
+      url: '/api/resupply/1?key=1234',
+      method: 'PATCH',
+      contentType: 'application/json',
+      data: JSON.stringify({'amount': rand_amount})
+    }).done(function(data){
+      $.ajax({
+        url: '/stock',
+        method: 'GET',
+      }).done(function(data){
+        $('body').html(data);
+      });
+    });
+
+    $.ajax({
+      url: '/api/resupply/2?key=1234',
+      method: 'PATCH',
+      contentType: 'application/json',
+      data: JSON.stringify({'amount': rand_amount})
+    }).done(function(data){
+      $.ajax({
+        url: '/stock',
+        method: 'GET',
+      }).done(function(data){
+        $('body').html(data);
+      });
+    });
+
+    $.ajax({
+      url: '/api/resupply/3?key=1234',
+      method: 'PATCH',
+      contentType: 'application/json',
+      data: JSON.stringify({'amount': rand_amount})
+    }).done(function(data){
+      $.ajax({
+        url: '/stock',
+        method: 'GET',
+      }).done(function(data){
+        $('body').html(data);
+      });
+    });
+
+    $.ajax({
+      url: '/api/resupply/4?key=1234',
+      method: 'PATCH',
+      contentType: 'application/json',
+      data: JSON.stringify({'amount': rand_amount})
+    }).done(function(data){
+      $.ajax({
+        url: '/stock',
+        method: 'GET',
+      }).done(function(data){
+        $('body').html(data);
+      });
+    });
+  });
+
+</script>
 <table>
   <tr>
     {% for header in headers %}
