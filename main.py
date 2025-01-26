@@ -7,6 +7,7 @@ from check_api import check_api_key
 from check_login import check_logged_in, check_logged_out
 from dbContextManager import UseDatabase
 from random import randrange
+#(TODO) BETTER ERROR HANDLING - EVERY PROBLEM GIVING THE SAME MESSAGE - SPLIT INTO SEPERATE ERRORS AND PRINT ERROR TRACE
 
 app = Flask(__name__)
 app.secret_key = 'secret'
@@ -70,9 +71,9 @@ def authenticate():
             passwordDB = cursor.fetchall()
 
         if len(session['email']) == 0:
-            return("Invalid username")
+            return "Invalid username"
         elif not check_password_hash(passwordDB[0][0], password):
-            return("Invalid password")
+            return"Invalid password"
 
         session['logged_in'] = True
 
@@ -148,7 +149,19 @@ def pets():
 @app.route('/account')  #(TODO) VIEW/EDIT ACC INFO
 @check_logged_in
 def account_page():
-    return render_template('account.html')
+    try:
+        with UseDatabase(app.config['dbconfig']) as cursor:
+            _SQL = '''SELECT name, surname, email, phone FROM users
+            WHERE id=%s'''
+
+            cursor.execute(_SQL, (session['userid'],))
+            results = cursor.fetchall()
+
+            return render_template('account.html',
+                                   data=results)
+
+    except DatabaseError:
+        return "Unable to connect to the database", 404
 
 @app.route('/stock')
 @check_logged_in    #(TODO) MODIFY DECORATOR - CHECK_USER_LOGGED_IN AND CHECK_ADMIN_LOGGED_IN
@@ -393,6 +406,26 @@ def add_vet_api():
                                   vet_data['appointment_type']))
 
         return "Successfully added new vet", 201
+
+    except DatabaseError:
+        return "Unable to connect to the database", 404
+
+@app.route('/api/account', methods=['PATCH'])
+@check_api_key(app)
+def modify_account_api():
+    try:
+        account_data = request.get_json()
+
+        for key, value in account_data.items():
+            if key not in('name', 'surname', 'email', 'phone', 'role'):
+                return "Unable to change value", 404
+
+            with UseDatabase(app.config['dbconfig']) as cursor:
+                _SQL = f'''UPDATE users SET {key}=%s WHERE id=%s'''
+
+                cursor.execute(_SQL, (value, session['userid']))
+
+        return "Successfully updated user data"
 
     except DatabaseError:
         return "Unable to connect to the database", 404
