@@ -430,6 +430,26 @@ def modify_account_api():
     except DatabaseError:
         return "Unable to connect to the database", 404
 
+@app.route('/api/users/<int:user_id>', methods=['PATCH'])
+@check_api_key(app)
+def modify_user_api(user_id):
+    try:
+        account_data = request.get_json()
+
+        for key, value in account_data.items():
+            if key not in('name', 'surname', 'email', 'phone'):
+                return "Unable to change value", 404
+
+            with UseDatabase(app.config['dbconfig']) as cursor:
+                _SQL = f'''UPDATE users SET {key}=%s WHERE id=%s'''
+
+                cursor.execute(_SQL, (value, user_id))
+
+        return "Successfully updated user data"
+
+    except DatabaseError:
+        return "Unable to connect to the database", 404
+
 @app.route('/api/appointments/<int:app_id>', methods=['PATCH'])
 @check_api_key(app)
 def modify_appointment_api(app_id):
@@ -522,6 +542,20 @@ def modify_stock_api(res_id):
             cursor.execute(_SQL, (res_data['amount'], res_id))
 
             return "Resupplied resource successfully"
+
+    except DatabaseError:
+        return "Unable to connect to the database", 404
+
+@app.route('/api/appointments/<int:app_id>', methods=['DELETE']) #(TODO)
+@check_api_key(app)
+def delete_app_api(app_id):
+    try:
+        with UseDatabase(app.config['dbconfig']) as cursor:
+            _SQL = '''DELETE FROM appointments WHERE id=%s'''
+
+            cursor.execute(_SQL, (app_id,))
+
+        return "Successfully removed appointment data"
 
     except DatabaseError:
         return "Unable to connect to the database", 404

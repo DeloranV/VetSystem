@@ -76,14 +76,42 @@ a następnie wpisując pożądany termin w formacie RRRR-MM-DD GG-MM-SS.</p>
     </tr>
   {% endfor %}
 </table>
+{% if session['role'] == 'a' %}
+  <select id="remove_id">
+    {% for row in table %}
+      <option value="{{ row[0] }}">{{ row[0] }}</option>
+    {% endfor %}
+  </select>
+<input type="button" id="remove_app" value="Usuń wizytę">
+{% endif %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <script>
+  $('#remove_app').on('click', function(){
+    var $app_id = $('#remove_id').val();
+
+    $.ajax({
+      url: '/api/appointments/'.concat($app_id, '?key=1234'),
+      method: 'DELETE'
+    }).done(function(data){
+      $.ajax({
+        url: '/appointments',
+        method: 'GET'
+      }).done(function(data){
+        $('body').html(data);
+      });
+    });
+  });
+</script>
+<div id="modify_container">
+<script>
   $('.app_id').on('click', function(event){ //ZMIENIC NA KLIKANIE NA ID I POTEM WYBRAC CO SIE CHCE ZMIENIC I PRZESYLANIE ID W AJAX
-    if($('select').length == 0){
+    if($('#modify_select').length == 0){
 
       var $clicked_id = $(this).text();
 
-      var $option_select = $("<select>");
+      var $option_select = $("<select>")
+      .attr('id', 'modify_select');
+
       var $scheduled_option = $("<option value='scheduled'>Termin wizyty</option>");
 
       var $change_line = $('<input>')
@@ -95,15 +123,15 @@ a następnie wpisując pożądany termin w formacie RRRR-MM-DD GG-MM-SS.</p>
       .attr('id', 'change_submit')
       .attr('value', 'Zmień');
 
-      $('body').append($option_select);
-      $('select').append($scheduled_option);
+      $('#modify_container').append($option_select);
+      $('#modify_select').append($scheduled_option);
 
-      $('body').append($change_line);
+      $('#modify_container').append($change_line);
 
-      $('body').append($change_submit);
+      $('#modify_container').append($change_submit);
 
       $('#change_submit').on('click', function(){
-        var $changed_attr = $('select').val();
+        var $changed_attr = $('#modify_select').val();
         var $changed_val = $('#change_line').val();
 
         var data_object = {}
@@ -124,12 +152,11 @@ a następnie wpisując pożądany termin w formacie RRRR-MM-DD GG-MM-SS.</p>
         });
 
         $('#change_submit').remove();
-        $('select').remove();
+        $('#modify_select').remove();
         $('#change_line').remove();
       });
-
     };
  });
-
 </script>
+</div>
 {% endblock %}

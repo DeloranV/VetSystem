@@ -106,11 +106,13 @@
 {% endif %}
 <script>
   $('.pet_id').on('click', function(event){ //ZMIENIC NA KLIKANIE NA ID I POTEM WYBRAC CO SIE CHCE ZMIENIC I PRZESYLANIE ID W AJAX
-    if($('select').length == 0){
+    if($('#option_select').length == 0){
 
       var $clicked_id = $(this).text();
 
-      var $option_select = $("<select>");
+      var $option_select = $("<select>")
+      .attr('id', 'option_select');
+
       var $name_option = $("<option value='name'>Imie</option>");
       var $type_option = $("<option value='type'>Gatunek</option>");
       var $age_option = $("<option value='age'>Wiek</option>");
@@ -125,16 +127,16 @@
       .attr('value', 'Zmień');
 
       $('body').append($option_select);
-      $('select').append($name_option);
-      $('select').append($type_option);
-      $('select').append($age_option)
+      $('#option_select').append($name_option);
+      $('#option_select').append($type_option);
+      $('#option_select').append($age_option)
 
       $('body').append($change_line);
 
       $('body').append($change_submit);
 
       $('#change_submit').on('click', function(){
-        var $changed_attr = $('select').val();
+        var $changed_attr = $('#option_select').val();
         var $changed_val = $('#change_line').val();
 
         var data_object = {};
