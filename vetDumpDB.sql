@@ -36,7 +36,7 @@ CREATE TABLE `appointments` (
   CONSTRAINT `appointments_ibfk_1` FOREIGN KEY (`pet_id`) REFERENCES `pets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `appointments_ibfk_2` FOREIGN KEY (`vet_id`) REFERENCES `vets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `appointments_ibfk_3` FOREIGN KEY (`resource_id`) REFERENCES `resources` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -45,7 +45,7 @@ CREATE TABLE `appointments` (
 
 LOCK TABLES `appointments` WRITE;
 /*!40000 ALTER TABLE `appointments` DISABLE KEYS */;
-INSERT INTO `appointments` VALUES (1,1,1,1,'w','2024-01-23 10:00:00'),(3,13,1,1,'z','2025-01-01 12:00:00');
+INSERT INTO `appointments` VALUES (13,20,1,3,'k','2025-02-06 14:30:00'),(16,21,7,4,'z','2025-05-25 10:00:00'),(17,22,5,1,'d','2025-01-31 12:35:00');
 /*!40000 ALTER TABLE `appointments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -84,7 +84,7 @@ CREATE TABLE `pets` (
   PRIMARY KEY (`id`),
   KEY `owner_id` (`owner_id`),
   CONSTRAINT `pets_ibfk_1` FOREIGN KEY (`owner_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -93,7 +93,7 @@ CREATE TABLE `pets` (
 
 LOCK TABLES `pets` WRITE;
 /*!40000 ALTER TABLE `pets` DISABLE KEYS */;
-INSERT INTO `pets` VALUES (1,1,'Rafik','Pies',5),(11,1,'Fibi','Pies',13),(12,1,'Azor','Pies',4),(13,13,'Daisy','Kot',5);
+INSERT INTO `pets` VALUES (20,14,'Fibi','Pies',13),(21,15,'Azor','Pies',3),(22,16,'Lusia','Kot',7);
 /*!40000 ALTER TABLE `pets` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -123,9 +123,9 @@ DROP TABLE IF EXISTS `resources`;
 CREATE TABLE `resources` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(32) NOT NULL,
-  `amount` smallint NOT NULL,
+  `amount` tinyint DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -134,7 +134,7 @@ CREATE TABLE `resources` (
 
 LOCK TABLES `resources` WRITE;
 /*!40000 ALTER TABLE `resources` DISABLE KEYS */;
-INSERT INTO `resources` VALUES (1,'Strzykawki',3);
+INSERT INTO `resources` VALUES (1,'Leki',121),(3,'Gumowe rękawiczki',121),(4,'Nożyki chirurgiczne',115);
 /*!40000 ALTER TABLE `resources` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -154,8 +154,9 @@ CREATE TABLE `users` (
   `email` varchar(32) NOT NULL,
   `phone` char(9) NOT NULL,
   `role` char(1) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `un_constr` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -164,7 +165,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Roland','Gugala','scrypt:32768:8:1$XLTO5v0JjgJRJ6UQ$49ee7931cf22bf1cdae94b66eb96fcfe6a01d10899d29ddaca3603058f9f623546f066abd7c7f11a76104c64ca3206918d26b4eb92d590bddb6aa041b3c195a7','1234','rolandgugala@gmail.com','666954263','u'),(12,'admin','admin','scrypt:32768:8:1$RpTlD1pd2Jehf9Rp$c72bc1765d1cc6c29bc8b92bd4d660174e843d3d657cc22c325bc5ea5231c9cc01040aa254ec00ed1b0000f4d0ad1bd7ef980a76281b9105481409fb8afc02e7','1111','admin@admin.com','344444444','a'),(13,'jakub','mitek','scrypt:32768:8:1$fO3kIx9PjYDIpOXt$2935248e1fde092dea22359632815d26a9590f27ea63a4afe5c1998f1562a528a0210dab7ffc433963b0828732cf4c8478c77f5611a6b3bce9b0bca6ab3fb815','VLRTzIosi5bOeQ','mitek@mail.com','213312321','u');
+INSERT INTO `users` VALUES (12,'admin','admin','scrypt:32768:8:1$RpTlD1pd2Jehf9Rp$c72bc1765d1cc6c29bc8b92bd4d660174e843d3d657cc22c325bc5ea5231c9cc01040aa254ec00ed1b0000f4d0ad1bd7ef980a76281b9105481409fb8afc02e7','1111','admin@admin.com','344444444','a'),(14,'Roland','Gugala','scrypt:32768:8:1$PkEY86Ymvrb8pt8s$64f01bd78cf8f60e5e9d484ec10ce12fd19d787afb0256c2f2b9d364a7a72c50938a0c48a62fef7997e6e620418b305c03ad70d998d13f87b3db7ed68dbe47a6','aTskft2eakTV1A','rolandgugala@gmail.com','662432208','u'),(15,'Jakub','Mitek','scrypt:32768:8:1$QWw5YVhgCTYWClcg$a32cbe431002e6b22dedd4e46dc57d78df2fed567366ef94c5b82a2277e648eb6790f849d3c44dddc89c467db0f5badf8bff5c22cdec622eb3a54a6384f98937','Ptwj_xSR4G9iXA','jakubmitek@example.com','768936536','u'),(16,'Marta','Falinska','scrypt:32768:8:1$vJynsZsgcqfH76Ns$6b9fdf1a7c7dcba5b56b9a721b8511821e2b4c2919ea1559e5f7f94444d2e94111ad8022524ce49cb08e4aca30ff60c580303bfdb8aa9b26893de9a37d148217','ftgTH5nS92KipA','martafalinska@example.com','865654837','u');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -181,7 +182,7 @@ CREATE TABLE `vets` (
   `surname` varchar(32) NOT NULL,
   `appointment_type` char(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -190,7 +191,7 @@ CREATE TABLE `vets` (
 
 LOCK TABLES `vets` WRITE;
 /*!40000 ALTER TABLE `vets` DISABLE KEYS */;
-INSERT INTO `vets` VALUES (1,'Marcin','Kowalski','k');
+INSERT INTO `vets` VALUES (1,'Marcin','Kowalski','k'),(5,'Rafal','Bebel','d'),(6,'Jacek','Weterynarz','d'),(7,'Mateusz','Kowalski','z');
 /*!40000 ALTER TABLE `vets` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -239,4 +240,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-01-23  0:39:14
+-- Dump completed on 2025-01-29 23:29:05
