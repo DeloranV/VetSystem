@@ -30,7 +30,7 @@
             method: 'PATCH',
             contentType: 'application/json',
             data: JSON.stringify(data_object)
-        }).done(function(data){
+        }).success(function(data){
             $.ajax({
                 url: '/account',
                 method: 'GET'
@@ -38,6 +38,8 @@
                 $('body').html(data);
                 $('#result_box').append("<p>Pomyślnie zaaktualizowano dane</p>")
             });
+        }).error(function(data){
+            $('#result_box').append("Nie udało się zaaktualizować danych");
         });
     });
 </script>

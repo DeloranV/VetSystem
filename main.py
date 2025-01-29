@@ -1,6 +1,6 @@
 from secrets import token_urlsafe
 from mysql.connector import DatabaseError
-from flask import Flask, render_template, request, session, request_started
+from flask import Flask, render_template, request, session, request_started, jsonify
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import redirect
 from check_api import check_api_key
@@ -146,6 +146,7 @@ def pets():
     except DatabaseError:
         return "Unable to connect to the database", 404
 
+
 @app.route('/account')  #(TODO) VIEW/EDIT ACC INFO
 @check_logged_in
 def account_page():
@@ -272,6 +273,22 @@ def pets_api(pet_id=None):
                     results = cursor.fetchall()
 
                 return results
+
+    except DatabaseError:
+        return "Unable to connect to the database", 404
+
+@app.route('/api/user/pets')
+@check_api_key(app)
+def user_pets_api():
+    try:
+        with UseDatabase(app.config['dbconfig']) as cursor:
+
+            _SQL = '''SELECT id, name FROM pets WHERE owner_id=%s'''
+
+            cursor.execute(_SQL, (session['userid'],))
+            results = cursor.fetchall()
+
+            return jsonify(results)
 
     except DatabaseError:
         return "Unable to connect to the database", 404
@@ -417,8 +434,11 @@ def modify_account_api():
         account_data = request.get_json()
 
         for key, value in account_data.items():
+
             if key not in('name', 'surname', 'email', 'phone', 'role'):
                 return "Unable to change value", 404
+            if value == '':
+                return "No value provided", 404
 
             with UseDatabase(app.config['dbconfig']) as cursor:
                 _SQL = f'''UPDATE users SET {key}=%s WHERE id=%s'''
@@ -437,8 +457,12 @@ def modify_user_api(user_id):
         account_data = request.get_json()
 
         for key, value in account_data.items():
+
             if key not in('name', 'surname', 'email', 'phone'):
                 return "Unable to change value", 404
+
+            if value == '':
+                return "No value provided", 404
 
             with UseDatabase(app.config['dbconfig']) as cursor:
                 _SQL = f'''UPDATE users SET {key}=%s WHERE id=%s'''
@@ -459,6 +483,9 @@ def modify_appointment_api(app_id):
 
             if key != 'scheduled':
                 return "Can only change scheduled date"
+
+            if value == '':
+                return "No value provided", 404
 
             # change to unique api key identification
             with UseDatabase(app.config['dbconfig']) as cursor:
@@ -481,6 +508,9 @@ def modify_pet_api(pet_id):
             if key not in ('name', 'type', 'age'):
                 return "Unable to change value", 404
 
+            if value == '':
+                return "No value provided", 404
+
             with UseDatabase(app.config['dbconfig']) as cursor:
                 _SQL = f"UPDATE pets SET {key}=%s WHERE id=%s"
 
@@ -501,6 +531,9 @@ def modify_resource_api(res_id):
             if key not in ('name', 'amount'):
                 return "Unable to change value", 404
 
+            if value == '':
+                return "No value provided", 404
+
             with UseDatabase(app.config['dbconfig']) as cursor:
                 _SQL = f"UPDATE resources SET {key}=%s WHERE id=%s"
 
@@ -520,6 +553,9 @@ def modify_vet_api(vet_id):
 
             if key not in ('name', 'surname', 'appointment_type'):
                 return "Unable to change value", 404
+
+            if value == '':
+                return "No value provided", 404
 
             with UseDatabase(app.config['dbconfig']) as cursor:
                 _SQL = f"UPDATE vets SET {key}=%s WHERE id=%s"

@@ -104,6 +104,7 @@
     });
   </script>
 {% endif %}
+<div id="modify_container">
 <script>
   $('.pet_id').on('click', function(event){ //ZMIENIC NA KLIKANIE NA ID I POTEM WYBRAC CO SIE CHCE ZMIENIC I PRZESYLANIE ID W AJAX
     if($('#option_select').length == 0){
@@ -126,14 +127,14 @@
       .attr('id', 'change_submit')
       .attr('value', 'Zmień');
 
-      $('body').append($option_select);
+      $('#modify_container').append($option_select);
       $('#option_select').append($name_option);
       $('#option_select').append($type_option);
       $('#option_select').append($age_option)
 
-      $('body').append($change_line);
+      $('#modify_container').append($change_line);
 
-      $('body').append($change_submit);
+      $('#modify_container').append($change_submit);
 
       $('#change_submit').on('click', function(){
         var $changed_attr = $('#option_select').val();
@@ -162,7 +163,7 @@
       });
     };
  });
-
 </script>
+</div>
 {% endblock %}
 

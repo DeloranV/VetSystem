@@ -23,9 +23,13 @@
         .attr('type', 'text');
 
         var $type_label = $('<label>Rodzaj wizyty</label>');
-        var $type_input = $('<input>')
-        .attr('id', 'type_input')
-        .attr('type', 'text');
+        var $type_select = $('<select>')
+        .attr('id', 'type_select');
+
+        var $kontrola_option = $('<option value="k">Kontrola</option>');
+        var $wizyta_option = $('<option value="w">Wizyta</option>');
+        var $zabieg_option = $('<option value="z">Zabieg</option>');
+        var $dolegliwosc_option = $('<option value="d">Dolegliwość</option>');
 
         var $submit_button = $('<input>')
         .attr('type', 'button')
@@ -33,13 +37,15 @@
         .attr('value', 'Zarejestruj');
 
         $('#add_vet_box').append($name_label, $name_input, $surname_label, $surname_input, $type_label,
-                        $type_input, $submit_button);
+                        $type_select, $submit_button);
+
+        $('#type_select').append($kontrola_option, $wizyta_option, $zabieg_option, $dolegliwosc_option);
 
         $('#submit_button').on('click', function(){
 
           var $name_val = $('#name_input').val()
           var $surname_val = $('#surname_input').val();
-          var $type_val = $('#type_input').val();
+          var $type_val = $('#type_select').val()
 
           $.ajax({
             url: '/api/vets'.concat('?key=1234'),
@@ -71,9 +77,18 @@
   {% for row in table %}
     <tr>
       <td class="vet_id">{{ row[0] }}</td>
-      {% for item in row[1:] %}
+      {% for item in row[1:3] %}
       <td>{{ item }}</td>
       {% endfor %}
+      {% if row[3] == 'k' %}
+        <td>Kontrola</td>
+      {% endif %}
+      {% if row[3] == 'd' %}
+        <td>Dolegliwość</td>
+      {% endif %}
+      {% if row[3] == 'z' %}
+        <td>Zabieg</td>
+      {% endif %}
     </tr>
   {% endfor %}
 </table>
@@ -100,6 +115,7 @@
       });
     });
 </script>
+<div id="modify_container">
 <script>
   $('.vet_id').on('click', function(event){ //ZMIENIC NA KLIKANIE NA ID I POTEM WYBRAC CO SIE CHCE ZMIENIC I PRZESYLANIE ID W AJAX
     if($('#option_select').length == 0){
@@ -122,14 +138,14 @@
       .attr('id', 'change_submit')
       .attr('value', 'Zmień');
 
-      $('body').append($option_select);
+      $('#modify_container').append($option_select);
       $('#option_select').append($name_option);
       $('#option_select').append($surname_option);
       $('#option_select').append($type_option)
 
-      $('body').append($change_line);
+      $('#modify_container').append($change_line);
 
-      $('body').append($change_submit);
+      $('#modify_container').append($change_submit);
 
       $('#change_submit').on('click', function(){
         var $changed_attr = $('#option_select').val();
@@ -159,4 +175,5 @@
     };
  });
 </script>
+</div>
 {% endblock %}

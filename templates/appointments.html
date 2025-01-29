@@ -7,14 +7,19 @@ a następnie wpisując pożądany termin w formacie RRRR-MM-DD GG-MM-SS.</p>
 <input type="button" id="add_app" value="Zarejestruj nową wizytę">
 <div id="register_container">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  {% if session['role']=='a' %}
   <script>
     $('#add_app').on('click', function(){
-        if($('#type_input').length == 0) {
+        if($('#type_select').length == 0) {
 
           var $type_label = $('<label>Rodzaj wizyty</label>');
-          var $type_input = $('<input>')
-          .attr('id', 'type_input')
-          .attr('type', 'text');
+          var $type_select = $('<select>')
+          .attr('id', 'type_select');
+
+          var $kontrola_option = $('<option value="k">Kontrola</option>');
+          var $wizyta_option = $('<option value="w">Wizyta</option>');
+          var $zabieg_option = $('<option value="z">Zabieg</option>');
+          var $dolegliwosc_option = $('<option value="d">Dolegliwość</option>');
 
           var $pet_label = $('<label>Zwierzę do zarejestrowania</label>');
           var $pet_input = $('<input>')
@@ -24,19 +29,22 @@ a następnie wpisując pożądany termin w formacie RRRR-MM-DD GG-MM-SS.</p>
           var $scheduled_label = $('<label>Termin wizyty</label>');
           var $scheduled_input = $('<input>')
           .attr('id', 'scheduled_input')
-          .attr('type', 'text');
+          .attr('type', 'text')
+          .attr('placeholder','RRRR-MM-DD HH:MM:SS');
 
           var $submit_button = $('<input>')
           .attr('type', 'button')
           .attr('id', 'submit_button')
           .attr('value', 'Zarejestruj');
 
-          $('#register_container').append($type_label, $type_input, $pet_label, $pet_input, $scheduled_label,
+          $('#register_container').append($type_label, $type_select, $pet_label, $pet_input, $scheduled_label,
                           $scheduled_input, $submit_button);
+
+          $('#type_select').append($kontrola_option, $wizyta_option, $zabieg_option, $dolegliwosc_option);
 
           $('#submit_button').on('click', function(){
 
-            var $type_val = $('#type_input').val()
+            var $type_val = $('#type_select').val();
             var $pet_val = $('#pet_input').val();
             var $scheduled_val = $('#scheduled_input').val();
 
@@ -60,6 +68,83 @@ a następnie wpisując pożądany termin w formacie RRRR-MM-DD GG-MM-SS.</p>
         };
     });
   </script>
+  {% endif %}
+  {% if session['role']=='u'%}
+   <script>
+    $('#add_app').on('click', function(){
+        if($('#type_select').length == 0) {
+
+          var $type_label = $('<label>Rodzaj wizyty</label>');
+          var $type_select = $('<select>')
+          .attr('id', 'type_select');
+
+          var $kontrola_option = $('<option value="k">Kontrola</option>');
+          var $wizyta_option = $('<option value="w">Wizyta</option>');
+          var $zabieg_option = $('<option value="z">Zabieg</option>');
+          var $dolegliwosc_option = $('<option value="d">Dolegliwość</option>');
+
+          var $pet_label = $('<label>Zwierzę do zarejestrowania</label>');
+          var $pet_select = $('<select>')
+          .attr('id', 'pet_select');
+
+          var userPets = {};
+
+          $.ajax({
+            url: '/api/user/pets'.concat('?key=1234'),
+            method: 'GET',
+            dataType: 'json'
+          }).done(function(data){
+              data.forEach(function(row){
+                var $pet_option = $('<option>')
+                .attr('value', row[0])
+                .text(row[1]);
+                $('#pet_select').append($pet_option);
+              });
+          });
+
+          var $scheduled_label = $('<label>Termin wizyty</label>');
+          var $scheduled_input = $('<input>')
+          .attr('id', 'scheduled_input')
+          .attr('type', 'text')
+          .attr('placeholder','RRRR-MM-DD HH:MM:SS');
+
+          var $submit_button = $('<input>')
+          .attr('type', 'button')
+          .attr('id', 'submit_button')
+          .attr('value', 'Zarejestruj');
+
+          $('#register_container').append($type_label, $type_select, $pet_label, $pet_select, $scheduled_label,
+                          $scheduled_input, $submit_button);
+
+          $('#type_select').append($kontrola_option, $wizyta_option, $zabieg_option, $dolegliwosc_option);
+
+          $('#submit_button').on('click', function(){
+
+            var $type_val = $('#type_select').val();
+            var $pet_val = $('#pet_select').val();
+            var $scheduled_val = $('#scheduled_input').val();
+
+            $.ajax({
+              url: '/api/appointments'.concat('?key=1234'),
+              method: 'POST',
+              contentType: 'application/json',
+              data: JSON.stringify({"pet_id": $pet_val,
+                                    "appointment_type": $type_val,
+                                    "scheduled": $scheduled_val})
+            }).done(function(data){
+              $.ajax({
+                url: '/appointments',
+                method: 'GET',
+
+              }).done(function(data){
+                $('body').html(data);
+              });
+            });
+          });
+        };
+    });
+  </script>
+  {% endif %}
 </div>
 <table>
   <tr>
@@ -69,10 +154,45 @@ a następnie wpisując pożądany termin w formacie RRRR-MM-DD GG-MM-SS.</p>
   </tr>
   {% for row in table %}
     <tr>
+      {% if session['role'] == 'a' %}
+        <td class="app_id">{{ row[0] }}</td>
+        {% for item in row[1:4] %}
+          <td>{{ item }}</td>
+        {% endfor %}
+        {% if row[4]=='w' %}
+          <td>Wizyta</td>
+        {% endif %}
+        {% if row[4]=='d' %}
+          <td>Dolegliwość</td>
+        {% endif %}
+        {% if row[4]=='z' %}
+          <td>Zabieg</td>
+        {% endif %}
+        {% if row[4]=='k' %}
+          <td>Kontrola</td>
+        {% endif %}
+        <td>{{ row[5] }}</td>
+      {% endif %}
+
+      {% if session['role'] == 'u' %}
       <td class="app_id">{{ row[0] }}</td>
-      {% for item in row[1:] %}
-        <td>{{ item }}</td>
-      {% endfor %}
+        {% for item in row[1:5] %}
+          <td>{{ item }}</td>
+        {% endfor %}
+        {% if row[5]=='w' %}
+          <td>Wizyta</td>
+        {% endif %}
+        {% if row[5]=='d' %}
+          <td>Dolegliwość</td>
+        {% endif %}
+        {% if row[5]=='z' %}
+          <td>Zabieg</td>
+        {% endif %}
+        {% if row[5]=='k' %}
+          <td>Kontrola</td>
+        {% endif %}
+        <td>{{ row[6] }}</td>
+      {% endif %}
     </tr>
   {% endfor %}
 </table>
@@ -116,7 +236,8 @@ a następnie wpisując pożądany termin w formacie RRRR-MM-DD GG-MM-SS.</p>
 
       var $change_line = $('<input>')
       .attr('type', 'text')
-      .attr('id', 'change_line');
+      .attr('id', 'change_line')
+      .attr('placeholder', 'RRRR-MM-DD HH:MM:SS')
 
       var $change_submit = $("<input>")
       .attr('type', 'button')

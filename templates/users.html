@@ -43,6 +43,7 @@
       });
     });
   </script>
+<div id="modify_container">
 <script>
   $('.user_id').on('click', function(){
     if($('#option_select').length == 0){
@@ -66,14 +67,14 @@
       .attr('id', 'change_submit')
       .attr('value', 'Zmień');
 
-      $('body').append($option_select);
+      $('#modify_container').append($option_select);
       $('#option_select').append($name_option);
       $('#option_select').append($surname_option);
       $('#option_select').append($email_option)
 
-      $('body').append($change_line);
+      $('#modify_container').append($change_line);
 
-      $('body').append($change_submit);
+      $('#modify_container').append($change_submit);
 
       $('#change_submit').on('click', function(){
         var $changed_attr = $('#option_select').val();
@@ -103,4 +104,5 @@
     };
  });
 </script>
+</div>
 {% endblock %}
