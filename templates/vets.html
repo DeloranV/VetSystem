@@ -27,7 +27,6 @@
         .attr('id', 'type_select');
 
         var $kontrola_option = $('<option value="k">Kontrola</option>');
-        var $wizyta_option = $('<option value="w">Wizyta</option>');
         var $zabieg_option = $('<option value="z">Zabieg</option>');
         var $dolegliwosc_option = $('<option value="d">Dolegliwość</option>');
 
@@ -39,7 +38,7 @@
         $('#add_vet_box').append($name_label, $name_input, $surname_label, $surname_input, $type_label,
                         $type_select, $submit_button);
 
-        $('#type_select').append($kontrola_option, $wizyta_option, $zabieg_option, $dolegliwosc_option);
+        $('#type_select').append($kontrola_option, $zabieg_option, $dolegliwosc_option);
 
         $('#submit_button').on('click', function(){
 
@@ -48,7 +47,7 @@
           var $type_val = $('#type_select').val()
 
           $.ajax({
-            url: '/api/vets'.concat('?key=1234'),
+            url: '/api/vets'.concat('?key=1111'),
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({"name": $name_val,
@@ -103,7 +102,7 @@
       var $vet_id = $('#remove_id').val();
 
       $.ajax({
-        url: '/api/vets/'.concat($vet_id, '?key=1234'),
+        url: '/api/vets/'.concat($vet_id, '?key=1111'),
         method: 'DELETE'
       }).done(function(data){
         $.ajax({
@@ -155,7 +154,7 @@
         data_object[$changed_attr] = $changed_val;
 
         $.ajax({
-          url: '/api/vets/'.concat($clicked_id, '?key=1234'),
+          url: '/api/vets/'.concat($clicked_id, '?key=1111'),
           method: 'PATCH',
           data: JSON.stringify(data_object),
           contentType: 'application/json'

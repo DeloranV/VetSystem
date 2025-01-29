@@ -42,7 +42,7 @@
             var $age_val = $('#age_input').val();
 
             $.ajax({
-              url: '/api/pets'.concat('?key=1234'),
+              url: '/api/pets'.concat('?key=1111'),
               method: 'POST',
               contentType: 'application/json',
               data: JSON.stringify({"name": $name_val,
@@ -91,7 +91,7 @@
       var $pet_id = $('#remove_id').val();
 
       $.ajax({
-        url: '/api/pets/'.concat($pet_id, '?key=1234'),
+        url: '/api/pets/'.concat($pet_id, '?key=1111'),
         method: 'DELETE'
       }).done(function(data){
         $.ajax({
@@ -144,7 +144,7 @@
         data_object[$changed_attr] = $changed_val;
 
         $.ajax({
-          url: '/api/pets/'.concat($clicked_id, '?key=1234'),
+          url: '/api/pets/'.concat($clicked_id, '?key=1111'),
           method: 'PATCH',
           data: JSON.stringify(data_object),
           contentType: 'application/json'

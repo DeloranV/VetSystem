@@ -77,17 +77,10 @@ def authenticate():
 
         session['logged_in'] = True
 
-        return redirect('/dashboard')
+        return redirect('/appointments')
 
     except DatabaseError:
         return "Unable to connect to the database", 404
-
-@app.route('/dashboard')
-@check_logged_in
-def dashboard():
-    return render_template('dashboard.html',
-                           the_title='dashboard',
-                           name=session['name'])
 
 @app.route('/appointments')
 @check_logged_in
@@ -357,10 +350,10 @@ def add_app_api():
 
             random_vet_id = available_vets[randrange(0, len(available_vets))]
 
-            if app_data['appointment_type'] == 'w':
-                resource_used = 3
-            elif app_data['appointment_type'] == 'k':
+            if app_data['appointment_type'] == 'd':
                 resource_used = 1
+            elif app_data['appointment_type'] == 'k':
+                resource_used = 3
             elif app_data['appointment_type'] == 'z':
                 resource_used = 4
 
@@ -373,9 +366,12 @@ def add_app_api():
                                   app_data['appointment_type'],
                                   app_data['scheduled']))
 
-            _SQL = '''UPDATE resources SET amount = amount - 1 WHERE id=%s'''
+            _SQL = '''UPDATE resources SET amount = amount - %s WHERE id=%s'''
 
-            cursor.execute(_SQL, (resource_used,))
+            amount_used = randrange(1, 10)
+
+            cursor.execute(_SQL, (amount_used,
+                                  resource_used))
 
         return "Successfully added new appointment", 201
 

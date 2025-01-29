@@ -17,7 +17,6 @@ a następnie wpisując pożądany termin w formacie RRRR-MM-DD GG-MM-SS.</p>
           .attr('id', 'type_select');
 
           var $kontrola_option = $('<option value="k">Kontrola</option>');
-          var $wizyta_option = $('<option value="w">Wizyta</option>');
           var $zabieg_option = $('<option value="z">Zabieg</option>');
           var $dolegliwosc_option = $('<option value="d">Dolegliwość</option>');
 
@@ -40,7 +39,7 @@ a następnie wpisując pożądany termin w formacie RRRR-MM-DD GG-MM-SS.</p>
           $('#register_container').append($type_label, $type_select, $pet_label, $pet_input, $scheduled_label,
                           $scheduled_input, $submit_button);
 
-          $('#type_select').append($kontrola_option, $wizyta_option, $zabieg_option, $dolegliwosc_option);
+          $('#type_select').append($kontrola_option, $zabieg_option, $dolegliwosc_option);
 
           $('#submit_button').on('click', function(){
 
@@ -49,7 +48,7 @@ a następnie wpisując pożądany termin w formacie RRRR-MM-DD GG-MM-SS.</p>
             var $scheduled_val = $('#scheduled_input').val();
 
             $.ajax({
-              url: '/api/appointments'.concat('?key=1234'),
+              url: '/api/appointments'.concat('?key=1111'),
               method: 'POST',
               contentType: 'application/json',
               data: JSON.stringify({"pet_id": $pet_val,
@@ -79,7 +78,6 @@ a następnie wpisując pożądany termin w formacie RRRR-MM-DD GG-MM-SS.</p>
           .attr('id', 'type_select');
 
           var $kontrola_option = $('<option value="k">Kontrola</option>');
-          var $wizyta_option = $('<option value="w">Wizyta</option>');
           var $zabieg_option = $('<option value="z">Zabieg</option>');
           var $dolegliwosc_option = $('<option value="d">Dolegliwość</option>');
 
@@ -90,7 +88,7 @@ a następnie wpisując pożądany termin w formacie RRRR-MM-DD GG-MM-SS.</p>
           var userPets = {};
 
           $.ajax({
-            url: '/api/user/pets'.concat('?key=1234'),
+            url: '/api/user/pets'.concat('?key=1111'),
             method: 'GET',
             dataType: 'json'
           }).done(function(data){
@@ -116,7 +114,7 @@ a następnie wpisując pożądany termin w formacie RRRR-MM-DD GG-MM-SS.</p>
           $('#register_container').append($type_label, $type_select, $pet_label, $pet_select, $scheduled_label,
                           $scheduled_input, $submit_button);
 
-          $('#type_select').append($kontrola_option, $wizyta_option, $zabieg_option, $dolegliwosc_option);
+          $('#type_select').append($kontrola_option, $zabieg_option, $dolegliwosc_option);
 
           $('#submit_button').on('click', function(){
 
@@ -125,7 +123,7 @@ a następnie wpisując pożądany termin w formacie RRRR-MM-DD GG-MM-SS.</p>
             var $scheduled_val = $('#scheduled_input').val();
 
             $.ajax({
-              url: '/api/appointments'.concat('?key=1234'),
+              url: '/api/appointments'.concat('?key=1111'),
               method: 'POST',
               contentType: 'application/json',
               data: JSON.stringify({"pet_id": $pet_val,
@@ -210,7 +208,7 @@ a następnie wpisując pożądany termin w formacie RRRR-MM-DD GG-MM-SS.</p>
     var $app_id = $('#remove_id').val();
 
     $.ajax({
-      url: '/api/appointments/'.concat($app_id, '?key=1234'),
+      url: '/api/appointments/'.concat($app_id, '?key=1111'),
       method: 'DELETE'
     }).done(function(data){
       $.ajax({
@@ -259,7 +257,7 @@ a następnie wpisując pożądany termin w formacie RRRR-MM-DD GG-MM-SS.</p>
         data_object[$changed_attr] = $changed_val
 
         $.ajax({
-          url: '/api/appointments/'.concat($clicked_id, '?key=1234'),
+          url: '/api/appointments/'.concat($clicked_id, '?key=1111'),
           method: 'PATCH',
           data: JSON.stringify(data_object),
           contentType: 'application/json'
