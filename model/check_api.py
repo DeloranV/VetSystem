@@ -2,7 +2,7 @@ from flask import request
 from functools import wraps
 from mysql.connector import DatabaseError
 from model.dbContextManager import UseDatabase
-from model import db_config
+from .model import db_config
 
 def check_api_key(func):
     @wraps(func)
