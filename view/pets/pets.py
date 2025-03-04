@@ -5,7 +5,7 @@ from model.model import db_config
 from flask import render_template, session
 from mysql.connector import DatabaseError
 
-pet_bp = Blueprint('pet_bp', __name__)
+pet_bp = Blueprint('pet_bp', __name__, template_folder='templates')
 
 @pet_bp.route('/pets') #(TODO) PET INFO EDITING
 @check_logged_in

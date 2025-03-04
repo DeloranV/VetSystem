@@ -5,7 +5,7 @@ from model.model import db_config
 from flask import session, render_template
 from mysql.connector import DatabaseError
 
-acc_bp = Blueprint('acc_bp', __name__)
+acc_bp = Blueprint('acc_bp', __name__, template_folder='templates')
 
 @acc_bp.route('/account')  #(TODO) VIEW/EDIT ACC INFO
 @check_logged_in

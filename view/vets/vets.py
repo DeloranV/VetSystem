@@ -5,7 +5,7 @@ from flask import render_template, session, redirect
 from mysql.connector import DatabaseError
 from model.model import db_config
 
-vets_bp = Blueprint('vets_bp', __name__)
+vets_bp = Blueprint('vets_bp', __name__, template_folder='templates')
 
 @vets_bp.route('/vets')
 @check_logged_in
