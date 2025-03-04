@@ -6,7 +6,7 @@ from flask import session, request
 from random import randrange
 from model.model import db_config
 
-api_bp = Blueprint('api_bp', __name__)
+api_bp = Blueprint('api_bp', __name__) #(TODO) URL PREFIX
 
 @api_bp.route('/api/appointments')
 @api_bp.route('/api/appointments/<int:app_id>')
