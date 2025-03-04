@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify
 from model.check_api import check_api_key
 from model.dbContextManager import UseDatabase
 from mysql.connector import DatabaseError
-from flask import session, request
+from flask import session, request, Response
 from random import randrange
 from model.model import db_config
 
@@ -11,7 +11,7 @@ api_bp = Blueprint('api_bp', __name__) #(TODO) URL PREFIX
 @api_bp.route('/api/appointments')
 @api_bp.route('/api/appointments/<int:app_id>')
 @check_api_key
-def appointments_api(app_id=None):
+def appointments_api(app_id:int = None) -> str | tuple | tuple:
     try:
         with UseDatabase(db_config) as cursor:
             if not app_id:
@@ -34,7 +34,7 @@ def appointments_api(app_id=None):
 @api_bp.route('/api/pets')
 @api_bp.route('/api/pets/<int:pet_id>')
 @check_api_key
-def pets_api(pet_id=None):
+def pets_api(pet_id:int = None) -> str | tuple:
     try:
         with UseDatabase(db_config) as cursor:
                 if not pet_id:
@@ -56,7 +56,7 @@ def pets_api(pet_id=None):
 
 @api_bp.route('/api/user/pets')
 @check_api_key
-def user_pets_api():
+def user_pets_api() -> Response | tuple:
     try:
         with UseDatabase(db_config) as cursor:
 
@@ -72,7 +72,7 @@ def user_pets_api():
 
 @api_bp.route('/api/resources')
 @check_api_key
-def resources_api():
+def resources_api() -> str | tuple:
     try:
         with UseDatabase(db_config) as cursor:
             _SQL = '''SELECT * FROM resources'''
@@ -88,7 +88,7 @@ def resources_api():
 @api_bp.route('/api/vets')
 @api_bp.route('/api/vets/<int:vet_id>')
 @check_api_key
-def vets_api(vet_id=None):
+def vets_api(vet_id:int = None) -> str | tuple:
     try:
         with UseDatabase(db_config) as cursor:
             if not vet_id:
@@ -110,7 +110,7 @@ def vets_api(vet_id=None):
 
 @api_bp.route('/api/appointments', methods=['POST'])
 @check_api_key
-def add_app_api():
+def add_app_api() -> str | tuple:
     try:
         app_data = request.get_json()
         # change to unique api key identification
@@ -164,7 +164,7 @@ def add_app_api():
 
 @api_bp.route('/api/pets', methods=['POST'])
 @check_api_key
-def add_pet_api():
+def add_pet_api() -> str | tuple:
     try:
         pet_data = request.get_json()
           #change to unique api key identification
@@ -191,7 +191,7 @@ def add_pet_api():
 
 @api_bp.route('/api/vets', methods=['POST'])
 @check_api_key
-def add_vet_api():
+def add_vet_api() -> str | tuple:
     try:
         vet_data = request.get_json()
         # change to unique api key identification
@@ -209,7 +209,7 @@ def add_vet_api():
 
 @api_bp.route('/api/account', methods=['PATCH'])
 @check_api_key
-def modify_account_api():
+def modify_account_api() -> str | tuple:
     try:
         account_data = request.get_json()
 
@@ -232,7 +232,7 @@ def modify_account_api():
 
 @api_bp.route('/api/users/<int:user_id>', methods=['PATCH'])
 @check_api_key
-def modify_user_api(user_id):
+def modify_user_api(user_id:int) -> str | tuple:
     try:
         account_data = request.get_json()
 
@@ -256,7 +256,7 @@ def modify_user_api(user_id):
 
 @api_bp.route('/api/appointments/<int:app_id>', methods=['PATCH'])
 @check_api_key
-def modify_appointment_api(app_id):
+def modify_appointment_api(app_id:int) -> str | tuple:
     try:
         appointment_data = request.get_json()
         for key, value in appointment_data.items():
@@ -280,7 +280,7 @@ def modify_appointment_api(app_id):
 
 @api_bp.route('/api/pets/<int:pet_id>', methods=['PATCH'])
 @check_api_key
-def modify_pet_api(pet_id):
+def modify_pet_api(pet_id:int) -> str | tuple:
     try:
         pet_data = request.get_json()
         for key, value in pet_data.items():
@@ -303,7 +303,7 @@ def modify_pet_api(pet_id):
 
 @api_bp.route('/api/resources/<int:res_id>', methods=['PATCH'])
 @check_api_key
-def modify_resource_api(res_id):
+def modify_resource_api(res_id:int) -> str | tuple:
     try:
         res_data = request.get_json()
         for key, value in res_data.items():
@@ -326,7 +326,7 @@ def modify_resource_api(res_id):
 
 @api_bp.route('/api/vets/<int:vet_id>', methods=['PATCH'])
 @check_api_key
-def modify_vet_api(vet_id):
+def modify_vet_api(vet_id:int) -> str | tuple:
     try:
         vet_data = request.get_json()
         for key, value in vet_data.items():
@@ -349,7 +349,7 @@ def modify_vet_api(vet_id):
 
 @api_bp.route('/api/resupply/<int:res_id>', methods=['PATCH'])
 @check_api_key
-def modify_stock_api(res_id):
+def modify_stock_api(res_id:int) -> str | tuple:
     try:
         res_data = request.get_json()
         with UseDatabase(db_config) as cursor:
@@ -364,7 +364,7 @@ def modify_stock_api(res_id):
 
 @api_bp.route('/api/appointments/<int:app_id>', methods=['DELETE'])
 @check_api_key
-def delete_app_api(app_id):
+def delete_app_api(app_id:int) -> str | tuple:
     try:
         with UseDatabase(db_config) as cursor:
             _SQL = '''DELETE FROM appointments WHERE id=%s'''
@@ -378,7 +378,7 @@ def delete_app_api(app_id):
 
 @api_bp.route('/api/pets/<int:pet_id>', methods=['DELETE'])
 @check_api_key
-def delete_pet_api(pet_id):
+def delete_pet_api(pet_id:int) -> str | tuple:
     try:
         with UseDatabase(db_config) as cursor:
             _SQL = '''DELETE FROM pets WHERE id=%s'''
@@ -392,7 +392,7 @@ def delete_pet_api(pet_id):
 
 @api_bp.route('/api/vets/<int:vet_id>', methods=['DELETE'])
 @check_api_key
-def delete_vet_api(vet_id):
+def delete_vet_api(vet_id:int) -> str | tuple:
     try:
         with UseDatabase(db_config) as cursor:
             _SQL = '''DELETE FROM vets WHERE id=%s'''
@@ -406,7 +406,7 @@ def delete_vet_api(vet_id):
 
 @api_bp.route('/api/users/<int:user_id>', methods=['DELETE'])
 @check_api_key
-def delete_user_api(user_id):
+def delete_user_api(user_id:int) -> str | tuple:
     try:
         with UseDatabase(db_config) as cursor:
             _SQL = '''DELETE FROM users WHERE id=%s'''

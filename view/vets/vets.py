@@ -1,7 +1,7 @@
 from model.check_login import check_logged_in
 from flask.blueprints import Blueprint
 from model.dbContextManager import UseDatabase
-from flask import render_template, session, redirect
+from flask import render_template, session, redirect, Response
 from mysql.connector import DatabaseError
 from model.model import db_config
 
@@ -9,7 +9,7 @@ vets_bp = Blueprint('vets_bp', __name__, template_folder='templates')
 
 @vets_bp.route('/vets')
 @check_logged_in
-def vet_monitor():
+def vet_monitor() -> tuple | Response | str:
     if session['role'] == 'a':
         try:
             with UseDatabase(db_config) as cursor:

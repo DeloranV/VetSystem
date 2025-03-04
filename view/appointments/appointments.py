@@ -9,7 +9,7 @@ appointments_bp = Blueprint('appointments_bp', __name__, template_folder='templa
 
 @appointments_bp.route('/appointments')
 @check_logged_in
-def appointments():
+def appointments() -> str | tuple:
     try:
         with UseDatabase(db_config) as cursor:
             if session['role'] == 'u':

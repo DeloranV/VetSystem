@@ -9,7 +9,7 @@ pet_bp = Blueprint('pet_bp', __name__, template_folder='templates')
 
 @pet_bp.route('/pets')
 @check_logged_in
-def pets():
+def pets() -> str | tuple:
     try:
         with UseDatabase(db_config) as cursor:
             if session['role'] == 'u':

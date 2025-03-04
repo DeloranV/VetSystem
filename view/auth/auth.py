@@ -3,7 +3,7 @@ from model.check_login import check_logged_out
 from flask.blueprints import Blueprint
 from model.dbContextManager import UseDatabase
 from model.model import db_config
-from flask import render_template, request, redirect, session
+from flask import render_template, request, redirect, session, Response
 from werkzeug.security import generate_password_hash, check_password_hash
 from mysql.connector import DatabaseError
 
@@ -12,17 +12,17 @@ auth_bp = Blueprint('app_bp', __name__, template_folder='templates')
 @auth_bp.route('/')
 @auth_bp.route('/login')
 @check_logged_out
-def home():
+def home() -> str:
     return render_template('login.html',
                            the_title = "Login page")
 
 @auth_bp.route('/register')
-def register():
+def register() -> str:
     return render_template('register.html',
                            the_title = "Register page")
 
 @auth_bp.route('/createaccount', methods=['POST'])
-def create_account():
+def create_account() -> Response | tuple:
     try:
         with UseDatabase(db_config) as cursor:
             _SQL = '''INSERT INTO users(name, surname, password, api_key, email, phone, role)
@@ -42,7 +42,7 @@ def create_account():
         return "Unable to connect to the database", 404
 
 @auth_bp.route('/authenticate', methods=['POST'])
-def authenticate():
+def authenticate() -> Response | str | tuple:
     email = request.form['email']
     password = request.form['password']
 
@@ -75,7 +75,7 @@ def authenticate():
         return "Unable to connect to the database", 404
 
 @auth_bp.route('/logout')
-def logout():
+def logout() -> Response:
     session.pop('logged_in')
     session.pop('name')
     return redirect('/')

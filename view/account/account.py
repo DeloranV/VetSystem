@@ -9,7 +9,7 @@ acc_bp = Blueprint('acc_bp', __name__, template_folder='templates')
 
 @acc_bp.route('/account')
 @check_logged_in
-def account_page():
+def account_page() -> str | tuple:
     try:
         with UseDatabase(db_config) as cursor:
             _SQL = '''SELECT name, surname, email, phone FROM users
