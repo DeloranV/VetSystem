@@ -41,7 +41,7 @@ def create_account():
     except DatabaseError:
         return "Unable to connect to the database", 404
 
-@auth_bp.route('/authenticate', methods=['POST'])   #(TODO) MOVE TO API OR VIEW MODULE
+@auth_bp.route('/authenticate', methods=['POST'])
 def authenticate():
     email = request.form['email']
     password = request.form['password']

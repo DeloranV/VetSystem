@@ -7,7 +7,7 @@ from mysql.connector import DatabaseError
 
 pet_bp = Blueprint('pet_bp', __name__, template_folder='templates')
 
-@pet_bp.route('/pets') #(TODO) PET INFO EDITING
+@pet_bp.route('/pets')
 @check_logged_in
 def pets():
     try:

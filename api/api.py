@@ -278,7 +278,7 @@ def modify_appointment_api(app_id):
     except DatabaseError:
         return "Unable to connect to the database", 404
 
-@api_bp.route('/api/pets/<int:pet_id>', methods=['PATCH']) #(TODO)
+@api_bp.route('/api/pets/<int:pet_id>', methods=['PATCH'])
 @check_api_key
 def modify_pet_api(pet_id):
     try:
@@ -301,7 +301,7 @@ def modify_pet_api(pet_id):
     except DatabaseError:
         return "Unable to connect to the database", 404
 
-@api_bp.route('/api/resources/<int:res_id>', methods=['PATCH']) #(TODO)
+@api_bp.route('/api/resources/<int:res_id>', methods=['PATCH'])
 @check_api_key
 def modify_resource_api(res_id):
     try:
@@ -324,7 +324,7 @@ def modify_resource_api(res_id):
     except DatabaseError:
         return "Unable to connect to the database", 404
 
-@api_bp.route('/api/vets/<int:vet_id>', methods=['PATCH']) #(      TODO)
+@api_bp.route('/api/vets/<int:vet_id>', methods=['PATCH'])
 @check_api_key
 def modify_vet_api(vet_id):
     try:
@@ -362,7 +362,7 @@ def modify_stock_api(res_id):
     except DatabaseError:
         return "Unable to connect to the database", 404
 
-@api_bp.route('/api/appointments/<int:app_id>', methods=['DELETE']) #(TODO)
+@api_bp.route('/api/appointments/<int:app_id>', methods=['DELETE'])
 @check_api_key
 def delete_app_api(app_id):
     try:
@@ -376,7 +376,7 @@ def delete_app_api(app_id):
     except DatabaseError:
         return "Unable to connect to the database", 404
 
-@api_bp.route('/api/pets/<int:pet_id>', methods=['DELETE']) #(TODO)
+@api_bp.route('/api/pets/<int:pet_id>', methods=['DELETE'])
 @check_api_key
 def delete_pet_api(pet_id):
     try:
@@ -390,7 +390,7 @@ def delete_pet_api(pet_id):
     except DatabaseError:
         return "Unable to connect to the database", 404
 
-@api_bp.route('/api/vets/<int:vet_id>', methods=['DELETE']) #(TODO)
+@api_bp.route('/api/vets/<int:vet_id>', methods=['DELETE'])
 @check_api_key
 def delete_vet_api(vet_id):
     try:
@@ -404,7 +404,7 @@ def delete_vet_api(vet_id):
     except DatabaseError:
         return "Unable to connect to the database", 404
 
-@api_bp.route('/api/users/<int:user_id>', methods=['DELETE']) #(TODO)
+@api_bp.route('/api/users/<int:user_id>', methods=['DELETE'])
 @check_api_key
 def delete_user_api(user_id):
     try:

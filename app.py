@@ -9,7 +9,7 @@ from view.account.account import acc_bp
 from view.appointments.appointments import appointments_bp
 from model.model import db_config
 #(TODO) BETTER ERROR HANDLING - EVERY PROBLEM GIVING THE SAME MESSAGE - SPLIT INTO SEPERATE ERRORS AND PRINT ERROR TRACE
-#(TODO) USE OS.PATH INSTEAD OF STR
+
 app = Flask(__name__)
 app.secret_key = 'secret'
 

@@ -7,7 +7,7 @@ from mysql.connector import DatabaseError
 
 acc_bp = Blueprint('acc_bp', __name__, template_folder='templates')
 
-@acc_bp.route('/account')  #(TODO) VIEW/EDIT ACC INFO
+@acc_bp.route('/account')
 @check_logged_in
 def account_page():
     try:

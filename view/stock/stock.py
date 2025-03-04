@@ -3,15 +3,16 @@ from flask.blueprints import Blueprint
 from model.dbContextManager import UseDatabase
 from flask import render_template, session, redirect
 from mysql.connector import DatabaseError
+from model.model import db_config
 
 stock_bp = Blueprint('stock_bp', __name__, template_folder='templates')
 
 @stock_bp.route('/stock')
-@check_logged_in    #(TODO) MODIFY DECORATOR - CHECK_USER_LOGGED_IN AND CHECK_ADMIN_LOGGED_IN
+@check_logged_in
 def stock_monitor():
     if session['role'] == 'a':
         try:
-            with UseDatabase(app.config['dbconfig']) as cursor:
+            with UseDatabase(db_config) as cursor:
                 _SQL = "SELECT * FROM resources"
 
                 cursor.execute(_SQL)
