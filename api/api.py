@@ -4,7 +4,7 @@ from model.dbContextManager import UseDatabase
 from mysql.connector import DatabaseError
 from flask import session, request, Response
 from random import randrange
-from model.model import db_config
+from model.model import _db_config
 
 api_bp = Blueprint('api_bp', __name__) #(TODO) URL PREFIX
 
@@ -13,7 +13,7 @@ api_bp = Blueprint('api_bp', __name__) #(TODO) URL PREFIX
 @check_api_key
 def appointments_api(app_id:int = None) -> str | tuple | tuple:
     try:
-        with UseDatabase(db_config) as cursor:
+        with UseDatabase(_db_config) as cursor:
             if not app_id:
                     _SQL = '''SELECT * FROM appointments'''
 
@@ -36,7 +36,7 @@ def appointments_api(app_id:int = None) -> str | tuple | tuple:
 @check_api_key
 def pets_api(pet_id:int = None) -> str | tuple:
     try:
-        with UseDatabase(db_config) as cursor:
+        with UseDatabase(_db_config) as cursor:
                 if not pet_id:
                     _SQL = '''SELECT * FROM pets'''
 
@@ -58,7 +58,7 @@ def pets_api(pet_id:int = None) -> str | tuple:
 @check_api_key
 def user_pets_api() -> Response | tuple:
     try:
-        with UseDatabase(db_config) as cursor:
+        with UseDatabase(_db_config) as cursor:
 
             _SQL = '''SELECT id, name FROM pets WHERE owner_id=%s'''
 
@@ -74,7 +74,7 @@ def user_pets_api() -> Response | tuple:
 @check_api_key
 def resources_api() -> str | tuple:
     try:
-        with UseDatabase(db_config) as cursor:
+        with UseDatabase(_db_config) as cursor:
             _SQL = '''SELECT * FROM resources'''
 
             cursor.execute(_SQL)
@@ -90,7 +90,7 @@ def resources_api() -> str | tuple:
 @check_api_key
 def vets_api(vet_id:int = None) -> str | tuple:
     try:
-        with UseDatabase(db_config) as cursor:
+        with UseDatabase(_db_config) as cursor:
             if not vet_id:
                 _SQL = '''SELECT * FROM vets'''
 
@@ -114,7 +114,7 @@ def add_app_api() -> str | tuple:
     try:
         app_data = request.get_json()
         # change to unique api key identification
-        with UseDatabase(db_config) as cursor:
+        with UseDatabase(_db_config) as cursor:
             _SQL = '''SELECT id FROM vets
                     WHERE appointment_type=%s AND id NOT IN(
                         SELECT vet_id FROM appointments
@@ -168,7 +168,7 @@ def add_pet_api() -> str | tuple:
     try:
         pet_data = request.get_json()
           #change to unique api key identification
-        with UseDatabase(db_config) as cursor:
+        with UseDatabase(_db_config) as cursor:
             if 'owner_id' in pet_data:
                 _SQL = '''INSERT INTO pets(owner_id, name, type, age) VALUES(%s, %s, %s, %s)'''
 
@@ -195,7 +195,7 @@ def add_vet_api() -> str | tuple:
     try:
         vet_data = request.get_json()
         # change to unique api key identification
-        with UseDatabase(db_config) as cursor:
+        with UseDatabase(_db_config) as cursor:
             _SQL = '''INSERT INTO vets(name, surname, appointment_type) VALUES(%s, %s, %s)'''
 
             cursor.execute(_SQL, (vet_data['name'],
@@ -220,7 +220,7 @@ def modify_account_api() -> str | tuple:
             if value == '':
                 return "No value provided", 404
 
-            with UseDatabase(db_config) as cursor:
+            with UseDatabase(_db_config) as cursor:
                 _SQL = f'''UPDATE users SET {key}=%s WHERE id=%s'''
 
                 cursor.execute(_SQL, (value, session['userid']))
@@ -244,7 +244,7 @@ def modify_user_api(user_id:int) -> str | tuple:
             if value == '':
                 return "No value provided", 404
 
-            with UseDatabase(db_config) as cursor:
+            with UseDatabase(_db_config) as cursor:
                 _SQL = f'''UPDATE users SET {key}=%s WHERE id=%s'''
 
                 cursor.execute(_SQL, (value, user_id))
@@ -268,7 +268,7 @@ def modify_appointment_api(app_id:int) -> str | tuple:
                 return "No value provided", 404
 
             # change to unique api key identification
-            with UseDatabase(db_config) as cursor:
+            with UseDatabase(_db_config) as cursor:
                 _SQL = f"UPDATE appointments SET {key}=%s WHERE id=%s"
 
                 cursor.execute(_SQL, (value, app_id))
@@ -291,7 +291,7 @@ def modify_pet_api(pet_id:int) -> str | tuple:
             if value == '':
                 return "No value provided", 404
 
-            with UseDatabase(db_config) as cursor:
+            with UseDatabase(_db_config) as cursor:
                 _SQL = f"UPDATE pets SET {key}=%s WHERE id=%s"
 
                 cursor.execute(_SQL, (value, pet_id))
@@ -314,7 +314,7 @@ def modify_resource_api(res_id:int) -> str | tuple:
             if value == '':
                 return "No value provided", 404
 
-            with UseDatabase(db_config) as cursor:
+            with UseDatabase(_db_config) as cursor:
                 _SQL = f"UPDATE resources SET {key}=%s WHERE id=%s"
 
                 cursor.execute(_SQL, (value, res_id))
@@ -337,7 +337,7 @@ def modify_vet_api(vet_id:int) -> str | tuple:
             if value == '':
                 return "No value provided", 404
 
-            with UseDatabase(db_config) as cursor:
+            with UseDatabase(_db_config) as cursor:
                 _SQL = f"UPDATE vets SET {key}=%s WHERE id=%s"
 
                 cursor.execute(_SQL, (value, vet_id))
@@ -352,7 +352,7 @@ def modify_vet_api(vet_id:int) -> str | tuple:
 def modify_stock_api(res_id:int) -> str | tuple:
     try:
         res_data = request.get_json()
-        with UseDatabase(db_config) as cursor:
+        with UseDatabase(_db_config) as cursor:
             _SQL = '''UPDATE resources SET amount=amount+%s WHERE id=%s'''
 
             cursor.execute(_SQL, (res_data['amount'], res_id))
@@ -366,7 +366,7 @@ def modify_stock_api(res_id:int) -> str | tuple:
 @check_api_key
 def delete_app_api(app_id:int) -> str | tuple:
     try:
-        with UseDatabase(db_config) as cursor:
+        with UseDatabase(_db_config) as cursor:
             _SQL = '''DELETE FROM appointments WHERE id=%s'''
 
             cursor.execute(_SQL, (app_id,))
@@ -380,7 +380,7 @@ def delete_app_api(app_id:int) -> str | tuple:
 @check_api_key
 def delete_pet_api(pet_id:int) -> str | tuple:
     try:
-        with UseDatabase(db_config) as cursor:
+        with UseDatabase(_db_config) as cursor:
             _SQL = '''DELETE FROM pets WHERE id=%s'''
 
             cursor.execute(_SQL, (pet_id,))
@@ -394,7 +394,7 @@ def delete_pet_api(pet_id:int) -> str | tuple:
 @check_api_key
 def delete_vet_api(vet_id:int) -> str | tuple:
     try:
-        with UseDatabase(db_config) as cursor:
+        with UseDatabase(_db_config) as cursor:
             _SQL = '''DELETE FROM vets WHERE id=%s'''
 
             cursor.execute(_SQL, (vet_id,))
@@ -408,7 +408,7 @@ def delete_vet_api(vet_id:int) -> str | tuple:
 @check_api_key
 def delete_user_api(user_id:int) -> str | tuple:
     try:
-        with UseDatabase(db_config) as cursor:
+        with UseDatabase(_db_config) as cursor:
             _SQL = '''DELETE FROM users WHERE id=%s'''
 
             cursor.execute(_SQL, (user_id,))

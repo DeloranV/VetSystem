@@ -3,7 +3,7 @@ from flask.blueprints import Blueprint
 from model.dbContextManager import UseDatabase
 from flask import render_template, session, redirect, Response
 from mysql.connector import DatabaseError
-from model.model import db_config
+from model.model import _db_config
 
 users_bp = Blueprint('users_bp', __name__, template_folder='templates')
 
@@ -12,7 +12,7 @@ users_bp = Blueprint('users_bp', __name__, template_folder='templates')
 def users() -> tuple | Response | str:
     if session['role'] == 'a':
         try:
-            with UseDatabase(db_config) as cursor:
+            with UseDatabase(_db_config) as cursor:
                 _SQL = "SELECT id, name, surname, api_key, email, phone FROM users"
 
                 cursor.execute(_SQL)

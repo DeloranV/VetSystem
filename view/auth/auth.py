@@ -2,7 +2,7 @@ from secrets import token_urlsafe
 from model.check_login import check_logged_out
 from flask.blueprints import Blueprint
 from model.dbContextManager import UseDatabase
-from model.model import db_config
+from model.model import _db_config
 from flask import render_template, request, redirect, session, Response
 from werkzeug.security import generate_password_hash, check_password_hash
 from mysql.connector import DatabaseError
@@ -24,7 +24,7 @@ def register() -> str:
 @auth_bp.route('/createaccount', methods=['POST'])
 def create_account() -> Response | tuple:
     try:
-        with UseDatabase(db_config) as cursor:
+        with UseDatabase(_db_config) as cursor:
             _SQL = '''INSERT INTO users(name, surname, password, api_key, email, phone, role)
             VALUES(%s, %s, %s, %s, %s, %s, %s)'''
 
@@ -47,7 +47,7 @@ def authenticate() -> Response | str | tuple:
     password = request.form['password']
 
     try:
-        with UseDatabase(db_config) as cursor:
+        with UseDatabase(_db_config) as cursor:
             _SQL = '''SELECT id, email, name, role FROM users WHERE email = %s'''
             cursor.execute(_SQL, [email])
 

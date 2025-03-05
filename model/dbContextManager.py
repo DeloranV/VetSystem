@@ -2,14 +2,14 @@ import mysql.connector
 
 class UseDatabase:
     def __init__(self, config):
-        self.config = config
+        self._config = config
 
     def __enter__(self):
-        self.conn = mysql.connector.connect(**self.config)
-        self.cursor = self.conn.cursor()
-        return self.cursor
+        self._conn = mysql.connector.connect(**self._config)
+        self._cursor = self._conn.cursor()
+        return self._cursor
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.conn.commit()
-        self.cursor.close()
-        self.conn.close()
+        self._conn.commit()
+        self._cursor.close()
+        self._conn.close()

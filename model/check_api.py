@@ -2,14 +2,14 @@ from flask import request
 from functools import wraps
 from mysql.connector import DatabaseError
 from model.dbContextManager import UseDatabase
-from .model import db_config
+from .model import _db_config
 
 def check_api_key(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         kv_arguments = request.args.get('key','')
         try:
-            with UseDatabase(db_config) as cursor:
+            with UseDatabase(_db_config) as cursor:
                 _SQL = '''SELECT * FROM users WHERE api_key=%s'''
 
                 cursor.execute(_SQL, (kv_arguments,))
