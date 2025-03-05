@@ -13,6 +13,7 @@
 <input type="button" id="change_submit" value="Zmień dane">
 <div id="result_box"></div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="{{ url_for('static', filename='scripts/account.js') }}"></script>
 <script>
     $('#change_submit').on('click', function(){
         $name_val = $('#name').val();
