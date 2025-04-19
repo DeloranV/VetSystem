@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block body %}
 
-<form method="POST" action="/createaccount">
+<form method="POST" action="{{ url_for('app_bp.create_account') }}">
 
   <label>E-mail</label>
   <input name="email" id="email">

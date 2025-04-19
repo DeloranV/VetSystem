@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, url_for
 from api.api import api_bp
 from view.users.users import users_bp
 from view.auth.auth import auth_bp

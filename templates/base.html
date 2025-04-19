@@ -11,18 +11,18 @@
         <h1>vetSystem</h1>
             <ul>
                 {% if not session['logged_in'] %}
-                    <li><a href="/register">Rejestracja</a>
-                    <li><a href="/login">Logowanie</a>
+                    <li><a href="{{ url_for('app_bp.register') }}">Rejestracja</a>
+                    <li><a href="{{ url_for('app_bp.home') }}">Logowanie</a>
                 {% else %}
-                    <li><a href="/account">Konto</a></li>
-                    <li><a href="/appointments">Wizyty</a></li>
-                    <li><a href="/pets">Zwierzęta</a></li>
+                    <li><a href="{{ url_for('app_bp.account_page') }}">Konto</a></li>
+                    <li><a href="{{ url_for('app_bp.appointments') }}">Wizyty</a></li>
+                    <li><a href="{{ url_for('app_bp.pets') }}">Zwierzęta</a></li>
                     {% if session['role']=='a' %}
-                        <li><a href="/stock">Zasoby</a></li>
-                        <li><a href="/vets">Weterynarze</a></li>
-                        <li><a href="/users">Uzytkownicy</a></li>
+                        <li><a href="{{ url_for('app_bp.stock') }}">Zasoby</a></li>
+                        <li><a href="{{ url_for('app_bp.vet_monitor') }}">Weterynarze</a></li>
+                        <li><a href="{{ url_for('app_bp.users') }}">Uzytkownicy</a></li>
                     {% endif %}
-                    <li><a href="/logout">Wyloguj</a></li>
+                    <li><a href="{{ url_for('logout') }}">Wyloguj</a></li>
                 {% endif %}
             </ul>
     </nav>

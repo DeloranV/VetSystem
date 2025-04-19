@@ -1,4 +1,4 @@
-$('#add_pet').on('click', function(){
+dc$('#add_pet').on('click', function(){
         if($('#name_input').length == 0) {
 
           var $name_label = $('<label>Imie zwierzęcia</label>');

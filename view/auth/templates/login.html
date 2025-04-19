@@ -3,7 +3,7 @@
 
 <h2>Logowanie</h2>
 
-<form method="POST" action="/authenticate">
+<form method="POST" action="{{ url_for(app_bp.authenticate) }}">
   <label>E-mail</label>
   <input name="email" id="email">
   <label>Hasło</label>

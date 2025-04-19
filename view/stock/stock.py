@@ -1,7 +1,7 @@
 from model.check_login import check_logged_in
 from flask.blueprints import Blueprint
 from model.dbContextManager import UseDatabase
-from flask import render_template, session, redirect, Response
+from flask import render_template, session, redirect, Response, url_for
 from mysql.connector import DatabaseError
 from model.model import _db_config
 
@@ -27,4 +27,4 @@ def stock_monitor() -> tuple | Response | str:
         except DatabaseError:
             return "Unable to connect to the database", 404
     else:
-        return redirect('/')
+        return redirect(url_for('home'))

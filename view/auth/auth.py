@@ -3,7 +3,7 @@ from model.check_login import check_logged_out
 from flask.blueprints import Blueprint
 from model.dbContextManager import UseDatabase
 from model.model import _db_config
-from flask import render_template, request, redirect, session, Response
+from flask import render_template, request, redirect, session, Response, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 from mysql.connector import DatabaseError
 
@@ -36,7 +36,7 @@ def create_account() -> Response | tuple:
                                   request.form['phone'],
                                   "u"))
 
-        return redirect('/')
+        return redirect(url_for('home'))
 
     except DatabaseError:
         return "Unable to connect to the database", 404
@@ -69,7 +69,7 @@ def authenticate() -> Response | str | tuple:
 
         session['logged_in'] = True
 
-        return redirect('/appointments')
+        return redirect(url_for('appointments'))
 
     except DatabaseError:
         return "Unable to connect to the database", 404
@@ -78,4 +78,4 @@ def authenticate() -> Response | str | tuple:
 def logout() -> Response:
     session.pop('logged_in')
     session.pop('name')
-    return redirect('/')
+    return redirect(url_for('home'))
